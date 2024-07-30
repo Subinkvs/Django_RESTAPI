@@ -13,12 +13,20 @@ from .serializers import ProductSerializer
 def api_call(request, *args, **kwargs):
     """
     DRF API VIEW
-    """    
-    serializer = ProductSerializer(data=request.data)
-    if serializer.is_valid():
-        prod = serializer.save()
-        print(prod)
-        print(serializer.data)
-        return Response(serializer.data, status=201)
-    else:
-        return Response(serializer.errors, status=400)
+    """ 
+    
+    if request.method == "GET":
+        return Response({"error": "GET method not allowed"}, status=405)
+    
+    
+    if request.method == "POST":  
+        serializer = ProductSerializer(data=request.data)
+        if serializer.is_valid():
+            prod = serializer.save()
+            print(prod)
+            print(serializer.data)
+            return Response(serializer.data, status=201)
+       
+    return Response({"invalid data": "it is not a good data"}, status=400)
+    
+    
