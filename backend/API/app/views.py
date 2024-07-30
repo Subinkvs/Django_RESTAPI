@@ -9,13 +9,16 @@ from rest_framework.decorators import api_view
 from .serializers import ProductSerializer
 
 # Create your views here.
-@api_view(["GET"])
+@api_view(["POST"])
 def api_call(request, *args, **kwargs):
     """
     DRF API VIEW
     """    
-    product = Product.objects.all().order_by("?").first()
-    data = {}
-    if product:
-        data = ProductSerializer(product).data
-    return Response(data)
+    serializer = ProductSerializer(data=request.data)
+    if serializer.is_valid():
+        prod = serializer.save()
+        print(prod)
+        print(serializer.data)
+        return Response(serializer.data, status=201)
+    else:
+        return Response(serializer.errors, status=400)
