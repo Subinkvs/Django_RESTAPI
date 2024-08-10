@@ -7,16 +7,20 @@ from rest_framework.decorators import api_view
 from rest_framework.authentication import SessionAuthentication
 from django.shortcuts import get_object_or_404
 from .permissions import IsStaffEditorPermission
+from app.authentication import TokenAuthentication
 
 # Create your views here.
 class ProductDetailAPIView(generics.RetrieveAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    
 
 class ProductListCreateAPIView(generics.ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    authentication_classes = [authentication.SessionAuthentication]
+    authentication_classes = [authentication.SessionAuthentication,
+                              TokenAuthentication
+                            ]
     permission_classes = [IsStaffEditorPermission]
     
     def perform_create(self, serializer):
